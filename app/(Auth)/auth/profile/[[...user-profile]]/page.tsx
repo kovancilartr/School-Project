@@ -8,7 +8,7 @@ const UserProfilePage = async () => {
   const role = user?.publicMetadata.role;
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <UserProfile path="/user-profile" />
+      <UserProfile path="/auth/profile" />
       <Link href={(`/` + role) as string} className="flex flex-row gap-2 my-2">
         <ArrowDownLeftFromCircle className="text-gray-500 text-md" />
         Geri dön

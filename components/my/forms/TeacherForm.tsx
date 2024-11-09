@@ -45,6 +45,7 @@ const TeacherForm = ({
     console.log(data);
     formAction({ ...data, img: img?.secure_url });
   });
+  
 
   const router = useRouter();
 
@@ -183,7 +184,7 @@ const TeacherForm = ({
             </p>
           )}
         </div>
-        <CldUploadWidget
+        {/* <CldUploadWidget
           uploadPreset="school"
           onSuccess={(result, { widget }) => {
             setImg(result.info);
@@ -201,7 +202,7 @@ const TeacherForm = ({
               </div>
             );
           }}
-        </CldUploadWidget>
+        </CldUploadWidget> */}
       </div>
       {state.error && (
         <span className="text-red-500">Something went wrong!</span>

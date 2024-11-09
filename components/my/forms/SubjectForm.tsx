@@ -7,8 +7,8 @@ import { subjectSchema, SubjectSchema } from "@/lib/formValidationSchemas";
 import { createSubject, updateSubject } from "@/lib/actions";
 import { useFormState } from "react-dom";
 import { Dispatch, SetStateAction, useEffect } from "react";
-import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { toast } from "@/hooks/use-toast";
 
 const SubjectForm = ({
   type,
@@ -48,7 +48,12 @@ const SubjectForm = ({
 
   useEffect(() => {
     if (state.success) {
-      toast(`Subject has been ${type === "create" ? "created" : "updated"}!`);
+      toast({
+        variant: "success",
+        title: "İşlem başarılı...",
+        description: "Yeni konu oluşturuldu!",
+        duration: 5000,
+      })
       setOpen(false);
       router.refresh();
     }
@@ -59,17 +64,18 @@ const SubjectForm = ({
   return (
     <form className="flex flex-col gap-8" onSubmit={onSubmit}>
       <h1 className="text-xl font-semibold">
-        {type === "create" ? "Create a new subject" : "Update the subject"}
+        {type === "create" ? "Yeni bir konu oluştur" : "Konu düzenle"}
       </h1>
 
-      <div className="flex justify-between flex-wrap gap-4">
-        <InputField
-          label="Subject name"
-          name="name"
-          defaultValue={data?.name}
-          register={register}
-          error={errors?.name}
-        />
+      <div className="flex flex-row justify-between  gap-4">
+          <InputField
+            label="Konu Adı"
+            name="name"
+            defaultValue={data?.name}
+            register={register}
+            error={errors?.name}
+          />
+
         {data && (
           <InputField
             label="Id"
@@ -80,8 +86,8 @@ const SubjectForm = ({
             hidden
           />
         )}
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Teachers</label>
+        <div className="flex flex-col gap-2 w-full md:w-1/3">
+          <label className="text-xs text-gray-500">Öğretmenler</label>
           <select
             multiple
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
@@ -107,7 +113,7 @@ const SubjectForm = ({
         <span className="text-red-500">Something went wrong!</span>
       )}
       <button className="bg-blue-400 text-white p-2 rounded-md">
-        {type === "create" ? "Create" : "Update"}
+        {type === "create" ? "Oluştur" : "Güncelle"}
       </button>
     </form>
   );

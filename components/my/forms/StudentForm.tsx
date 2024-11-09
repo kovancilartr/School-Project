@@ -19,7 +19,7 @@ import {
   updateTeacher,
 } from "@/lib/actions";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
+import { useToast } from "@/hooks/use-toast";
 // import { CldUploadWidget } from "next-cloudinary";
 
 const StudentForm = ({
@@ -41,6 +41,7 @@ const StudentForm = ({
     resolver: zodResolver(studentSchema),
   });
 
+  const { toast } = useToast();
   const [img, setImg] = useState<any>();
 
   const [state, formAction] = useFormState(
@@ -52,8 +53,7 @@ const StudentForm = ({
   );
 
   const onSubmit = handleSubmit((data) => {
-    console.log("hello");
-    console.log(data);
+    console.log("StudentForm handleSubmit İçindekiler:", data);
     formAction({ ...data, img: img?.secure_url });
   });
 
@@ -61,9 +61,24 @@ const StudentForm = ({
 
   useEffect(() => {
     if (state.success) {
-      toast(`Student has been ${type === "create" ? "created" : "updated"}!`);
+      toast({
+        variant: "success",
+        title: "İşlem başarılı...",
+        description: `Öğrenci kaydı başarı ile  ${
+          type === "create" ? "oluşturuldu." : "güncellendi."
+        }!`,
+        duration: 5000,
+      });
       setOpen(false);
       router.refresh();
+    }
+    if (state.error) {
+      toast({
+        variant: "destructive",
+        title: "Hata oluştu",
+        description: "Bir hata meydana geldi!",
+        duration: 5000,
+      });
     }
   }, [state, router, type, setOpen]);
 
@@ -104,7 +119,7 @@ const StudentForm = ({
       <span className="text-xs text-gray-400 font-medium">
         Personal Information
       </span>
-      <CldUploadWidget
+      {/* <CldUploadWidget
         uploadPreset="school"
         onSuccess={(result, { widget }) => {
           setImg(result.info);
@@ -122,7 +137,7 @@ const StudentForm = ({
             </div>
           );
         }}
-      </CldUploadWidget>
+      </CldUploadWidget> */}
       <div className="flex justify-between flex-wrap gap-4">
         <InputField
           label="First Name"
@@ -248,9 +263,6 @@ const StudentForm = ({
           )}
         </div>
       </div>
-      {state.error && (
-        <span className="text-red-500">Something went wrong!</span>
-      )}
       <button type="submit" className="bg-blue-400 text-white p-2 rounded-md">
         {type === "create" ? "Create" : "Update"}
       </button>

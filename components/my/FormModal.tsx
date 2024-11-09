@@ -12,8 +12,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useFormState } from "react-dom";
-import { toast } from "react-toastify";
 import { FormContainerProps } from "./FormContainer";
+import { toast } from "@/hooks/use-toast";
 
 const deleteActionMap = {
   subject: deleteSubject,
@@ -21,7 +21,7 @@ const deleteActionMap = {
   teacher: deleteTeacher,
   student: deleteStudent,
   exam: deleteExam,
-// TODO: OTHER DELETE ACTIONS
+  // TODO: OTHER DELETE ACTIONS
   parent: deleteSubject,
   lesson: deleteSubject,
   assignment: deleteSubject,
@@ -131,7 +131,12 @@ const FormModal = ({
 
     useEffect(() => {
       if (state.success) {
-        toast(`${table} has been deleted!`);
+        toast({
+          variant: "success",
+          title: "Silme işlem başarılı...",
+          description: "Konu silindi!",
+          duration: 5000,
+        });
         setOpen(false);
         router.refresh();
       }

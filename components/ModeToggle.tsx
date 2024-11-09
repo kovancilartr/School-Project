@@ -11,6 +11,7 @@ export interface ModeToggleProps {
 export function ModeToggle({ footer }: ModeToggleProps) {
   const { setTheme, theme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const isDisabled = true; // Butonun Disable durumunu kontrol eder.
 
   useEffect(() => {
     setMounted(true);
@@ -40,10 +41,27 @@ export function ModeToggle({ footer }: ModeToggleProps) {
           </Button>
         </div>
       ) : (
-        <Button variant="ghost" size="icon" className="bg-transparent dark:bg-transparent focus:bg-transparent" onClick={() => setTheme(theme === "light" ? "dark" : "light")}>
-          <Sun className={sunClass} />
-          <Moon className={moonClass} />
-        </Button>
+        <div className="relative group">
+          <Button
+            disabled={isDisabled}
+            variant="ghost"
+            size="icon"
+            className="bg-transparent dark:bg-transparent focus:bg-transparent"
+            onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+          >
+            <Sun className={sunClass} />
+            <Moon className={moonClass} />
+          </Button>
+          {isDisabled && (
+            <span
+              className="cursor-default absolute left-1/2 top-6 transform -translate-x-1/2 mt-2 w-max
+             bg-red-600 text-white font-bold text-xs rounded py-1 px-2 
+             opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              Yapım Aşamasında
+            </span>
+          )}
+        </div>
       )}
     </>
   );

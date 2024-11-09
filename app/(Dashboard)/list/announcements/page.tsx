@@ -1,67 +1,70 @@
-import FormModal from "@/components/my/FormModal";
-import Pagination from "@/components/my/Pagination";
-import Table from "@/components/my/Table";
+import FormContainer from "@/components/my/FormContainer";
 import TableSearch from "@/components/my/TableSearch";
-import { currentUserId, role } from "@/lib/clerk";
+import Table from "@/components/my/Table";
+import Pagination from "@/components/my/Pagination";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { Announcement, Class, Prisma } from "@prisma/client";
 import Image from "next/image";
+import { auth } from "@clerk/nextjs/server";
 
 type AnnouncementList = Announcement & { class: Class };
-
-const columns = [
-  {
-    header: "Title",
-    accessor: "title",
-  },
-  {
-    header: "Class",
-    accessor: "class",
-  },
-  {
-    header: "Date",
-    accessor: "date",
-    className: "hidden md:table-cell",
-  },
-  ...(role === "admin"
-    ? [
-        {
-          header: "Actions",
-          accessor: "action",
-        },
-      ]
-    : []),
-];
-
-const renderRow = (item: AnnouncementList) => (
-  <tr
-    key={item.id}
-    className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
-  >
-    <td className="flex items-center gap-4 p-4">{item.title}</td>
-    <td>{item.class?.name || "-"}</td>
-    <td className="hidden md:table-cell">
-      {new Intl.DateTimeFormat("tr-TR").format(item.date)}
-    </td>
-    <td>
-      <div className="flex items-center gap-2">
-        {role === "admin" && (
-          <>
-            <FormModal table="announcement" type="update" data={item} />
-            <FormModal table="announcement" type="delete" id={item.id} />
-          </>
-        )}
-      </div>
-    </td>
-  </tr>
-);
 const AnnouncementListPage = async ({
   searchParams,
 }: {
   searchParams: { [key: string]: string | undefined };
 }) => {
-  const { page, ...queryParams } = await searchParams;
+  const { userId, sessionClaims } = await auth();
+  const role = (sessionClaims?.metadata as { role?: string })?.role;
+  const currentUserId = userId;
+
+  const columns = [
+    {
+      header: "Title",
+      accessor: "title",
+    },
+    {
+      header: "Class",
+      accessor: "class",
+    },
+    {
+      header: "Date",
+      accessor: "date",
+      className: "hidden md:table-cell",
+    },
+    ...(role === "admin"
+      ? [
+          {
+            header: "Actions",
+            accessor: "action",
+          },
+        ]
+      : []),
+  ];
+
+  const renderRow = (item: AnnouncementList) => (
+    <tr
+      key={item.id}
+      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
+    >
+      <td className="flex items-center gap-4 p-4">{item.title}</td>
+      <td>{item.class?.name || "-"}</td>
+      <td className="hidden md:table-cell">
+        {new Intl.DateTimeFormat("en-US").format(item.date)}
+      </td>
+      <td>
+        <div className="flex items-center gap-2">
+          {role === "admin" && (
+            <>
+              <FormContainer table="announcement" type="update" data={item} />
+              <FormContainer table="announcement" type="delete" id={item.id} />
+            </>
+          )}
+        </div>
+      </td>
+    </tr>
+  );
+  const { page, ...queryParams } = searchParams;
 
   const p = page ? parseInt(page) : 1;
 
@@ -74,10 +77,7 @@ const AnnouncementListPage = async ({
       if (value !== undefined) {
         switch (key) {
           case "search":
-            query.title = {
-              contains: value,
-              mode: "insensitive",
-            };
+            query.title = { contains: value, mode: "insensitive" };
             break;
           default:
             break;
@@ -85,7 +85,8 @@ const AnnouncementListPage = async ({
       }
     }
   }
-  // ROLE CONDITION
+
+  // ROLE CONDITIONS
 
   const roleConditions = {
     teacher: { lessons: { some: { teacherId: currentUserId! } } },
@@ -95,7 +96,9 @@ const AnnouncementListPage = async ({
 
   query.OR = [
     { classId: null },
-    { class: roleConditions[role as keyof typeof roleConditions] || {} },
+    {
+      class: roleConditions[role as keyof typeof roleConditions] || {},
+    },
   ];
 
   const [data, count] = await prisma.$transaction([
@@ -109,6 +112,7 @@ const AnnouncementListPage = async ({
     }),
     prisma.announcement.count({ where: query }),
   ]);
+
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
       {/* TOP */}
@@ -126,7 +130,7 @@ const AnnouncementListPage = async ({
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button>
             {role === "admin" && (
-              <FormModal table="announcement" type="create" />
+              <FormContainer table="announcement" type="create" />
             )}
           </div>
         </div>
@@ -134,7 +138,7 @@ const AnnouncementListPage = async ({
       {/* LIST */}
       <Table columns={columns} renderRow={renderRow} data={data} />
       {/* PAGINATION */}
-      <Pagination count={count} page={p} />
+      <Pagination page={p} count={count} />
     </div>
   );
 };

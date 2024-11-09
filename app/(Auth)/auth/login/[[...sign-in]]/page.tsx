@@ -17,7 +17,7 @@ export default function SignInPage() {
     if (role) {
       router.push(`/${role}`);
     } else {
-      router.push("/");
+      router.push("/auth/login");
     }
   }, [user, router]);
   return (
