@@ -6,6 +6,7 @@ import {
   deleteStudent,
   deleteSubject,
   deleteTeacher,
+  deleteParent,
 } from "@/lib/actions";
 import dynamic from "next/dynamic";
 import Image from "next/image";
@@ -14,6 +15,8 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useFormState } from "react-dom";
 import { FormContainerProps } from "./FormContainer";
 import { toast } from "@/hooks/use-toast";
+import { Button } from "../ui/button";
+import { Plus, UserCheck, UserPen, UserX } from "lucide-react";
 
 const deleteActionMap = {
   subject: deleteSubject,
@@ -22,7 +25,7 @@ const deleteActionMap = {
   student: deleteStudent,
   exam: deleteExam,
   // TODO: OTHER DELETE ACTIONS
-  parent: deleteSubject,
+  parent: deleteParent,
   lesson: deleteSubject,
   assignment: deleteSubject,
   result: deleteSubject,
@@ -49,6 +52,9 @@ const ClassForm = dynamic(() => import("./forms/ClassForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 const ExamForm = dynamic(() => import("./forms/ExamForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const ParentForm = dynamic(() => import("./forms/ParentForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 // TODO: OTHER FORMS
@@ -100,7 +106,14 @@ const forms: {
       setOpen={setOpen}
       relatedData={relatedData}
     />
-    // TODO OTHER LIST ITEMS
+  ),
+  parent: (setOpen, type, data, relatedData) => (
+    <ParentForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
   ),
 };
 
@@ -146,11 +159,17 @@ const FormModal = ({
       <form action={formAction} className="p-4 flex flex-col gap-4">
         <input type="text | number" name="id" value={id} hidden />
         <span className="text-center font-medium">
-          All data will be lost. Are you sure you want to delete this {table}?
+          Tüm veriler kaybolacak.{" "}
+          <span className="text-red-800 font-bold"></span> öğretmeni silmek
+          istediğinizden emin misiniz ?
         </span>
-        <button className="bg-red-700 text-white py-2 px-4 rounded-md border-none w-max self-center">
-          Delete
-        </button>
+        <Button
+          variant={"default"}
+          size={"sm"}
+          className="w-1/2 self-center text-lg"
+        >
+          Sil
+        </Button>
       </form>
     ) : type === "create" || type === "update" ? (
       forms[table](setOpen, type, data, relatedData)
@@ -161,12 +180,46 @@ const FormModal = ({
 
   return (
     <>
+      {/* DEFAULT BUTTON */}
       <button
-        className={`${size} flex items-center justify-center rounded-full ${bgColor}`}
+        className={`${size} flex items-center justify-center rounded-full ${bgColor} lg:hidden`}
         onClick={() => setOpen(true)}
       >
         <Image src={`/${type}.png`} alt="" width={16} height={16} />
       </button>
+      {/* ÖZEL BUTTON */}
+      <Button
+        variant={"default"}
+        size={"sm"}
+        onClick={() => setOpen(true)}
+        className={`${
+          type === "delete"
+            ? "bg-red-700 dark:text-white dark:hover:text-black"
+            : type === "create"
+            ? "bg-purple-800 dark:text-white dark:hover:text-black"
+            : type === "update"
+            ? "bg-blue-800 dark:text-white dark:hover:text-black"
+            : "bg-green-800 dark:text-white dark:hover:text-black"
+        } hidden lg:block`}
+      >
+        {type === "delete" ? (
+          <div className="flex items-center gap-1">
+            <UserX /> Sil
+          </div>
+        ) : type === "create" ? (
+          <div className="flex items-center gap-1">
+            <Plus /> Ekle
+          </div>
+        ) : type === "update" ? (
+          <div className="flex items-center gap-1">
+            <UserPen /> Güncelle
+          </div>
+        ) : (
+          <div className="flex items-center gap-1">
+            <UserCheck /> Görüntüle
+          </div>
+        )}
+      </Button>
       {open && (
         <div className="w-screen h-screen absolute left-0 top-0 bg-black bg-opacity-60 z-50 flex items-center justify-center">
           <div className="bg-white p-4 rounded-md relative w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]">

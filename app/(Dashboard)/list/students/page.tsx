@@ -9,6 +9,8 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { currentUser } from "@clerk/nextjs/server";
+import { Button } from "@/components/ui/button";
+import { UserCheck } from "lucide-react";
 
 type StudentList = Student & { class: Class };
 
@@ -44,7 +46,7 @@ const StudentListPage = async ({
       accessor: "address",
       className: "hidden lg:table-cell",
     },
-    ...(role === "admin"
+    ...(role === "admin" || role === "teacher"
       ? [
           {
             header: "İşlemler",
@@ -79,17 +81,38 @@ const StudentListPage = async ({
       <td className="hidden md:table-cell">{item.phone}</td>
       <td className="hidden md:table-cell">{item.address}</td>
       <td>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center sm:gap-2 lg:gap-4">
           <Link href={`/list/students/${item.id}`}>
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lamaSky">
+            {/* XS Sonrası butonu */}
+            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lamaSky lg:hidden">
               <Image src="/view.png" alt="" width={16} height={16} />
             </button>
+
+            {/* MD Sonrası butonu */}
+            <Button
+              variant={"default"}
+              size={"sm"}
+              className="hidden lg:block bg-cyan-700 dark:text-white dark:hover:text-black"
+            >
+              <div className="flex items-center gap-1">
+                <UserCheck /> Görüntüle
+              </div>
+            </Button>
           </Link>
-          {role === "admin" && (
+          {(role === "admin" || role === "teacher") && (
             // <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lamaPurple">
             //   <Image src="/delete.png" alt="" width={16} height={16} />
             // </button>
-            <FormContainer table="student" type="delete" id={item.id} />
+
+            <>
+              <FormContainer table="student" type="update" data={item} />
+              <FormContainer
+                table="student"
+                type="delete"
+                id={item.id}
+                data={item}
+              />
+            </>
           )}
         </div>
       </td>
@@ -166,7 +189,7 @@ const StudentListPage = async ({
   );
 
   return (
-    <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
+    <div className="baseContent p-4 rounded-md flex-1 m-4 mt-0">
       {/* TOP */}
       <div className="flex items-center justify-between">
         <h1 className="hidden md:block text-lg font-semibold">
@@ -175,12 +198,12 @@ const StudentListPage = async ({
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
+            {/* <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
               <Image src="/filter.png" alt="" width={14} height={14} />
             </button>
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
               <Image src="/sort.png" alt="" width={14} height={14} />
-            </button>
+            </button> */}
             {role === "admin" && (
               <FormContainer table="student" type="create" />
             )}

@@ -18,10 +18,16 @@ const SingleTeacherPage = async ({ params }: { params: { id: string } }) => {
 
   // Veritabanından öğretmen bilgilerini al
   const teacher = await prisma.teacher.findUnique({
-    where: { id: id }, // id'yi sayıya çevirin
+    where: { id: id },
     include: {
-      subjects: true, // İlgili konuları dahil et
-      classes: true, // İlgili sınıfları dahil et
+      subjects: true,
+      classes: true,
+      lessons: {
+        select: {
+          name: true,
+          day: true,
+        },
+      },
     },
   });
 
@@ -56,9 +62,25 @@ const SingleTeacherPage = async ({ params }: { params: { id: string } }) => {
                   <FormContainer table="teacher" type="update" data={teacher} />
                 )}
               </div>
-              <p className="text-sm text-gray-500">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-              </p>
+              <div className="border bg-white/30 border-black/30 p-2 rounded-lg drop-shadow-xl shadow-xl">
+                <p className="text-xs text-gray-500">
+                  <span className="font-bold text-red-700">Öğretmen ID:</span>{" "}
+                  {teacher.id}
+                  <br />
+                  <span className="font-bold text-red-700">
+                    Yetkili Olduğu Sınıf:
+                  </span>{" "}
+                  {teacher.classes.length > 0
+                    ? teacher.classes.map((c) => c.name).join(",")
+                    : "-"}
+                  <br />
+                  <span className="font-bold text-red-700">Kurslar:</span>{" "}
+                  {teacher.subjects.map((s) => s.name).join(",")}
+                  <br />
+                  <span className="font-bold text-red-700">Dersler:</span>{" "}
+                  {teacher.lessons.map((l) => l.name).join(",")}
+                </p>
+              </div>
               <div className="flex items-center justify-between gap-2 flex-wrap text-xs font-medium">
                 <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
                   <Image src="/blood.png" alt="" width={14} height={14} />
@@ -137,8 +159,10 @@ const SingleTeacherPage = async ({ params }: { params: { id: string } }) => {
                 className="w-6 h-6"
               />
               <div className="">
-                <h1 className="text-xl font-semibold">
-                  {teacher.classes.map((c) => c.name).join(",")}
+                <h1 className="text-xl font-semibold text-center">
+                  {teacher.classes.length > 0
+                    ? teacher.classes.map((c) => c.name).join(",")
+                    : "-"}
                 </h1>
                 <span className="text-sm text-gray-400">Yetkili Sınıfı</span>
               </div>
@@ -154,8 +178,10 @@ const SingleTeacherPage = async ({ params }: { params: { id: string } }) => {
       {/* RIGHT */}
       <div className="w-full xl:w-1/3 flex flex-col gap-4">
         <div className="bg-white p-4 rounded-md">
-          <h1 className="text-xl font-semibold">İlgili Bağlantılar</h1>
-          <div className="mt-4 flex gap-4 flex-wrap text-xs text-gray-500">
+          <h1 className="text-xl font-semibold text-center">
+            İlgili Bağlantılar
+          </h1>
+          <div className="mt-4 flex gap-4 flex-wrap text-xs text-gray-500 items-center justify-center">
             <Link
               className="p-3 rounded-md bg-lamaSkyLight hover:scale-105"
               href={`/list/classes?supervisorId=${paramUserId}`}

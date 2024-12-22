@@ -11,7 +11,7 @@ export interface ModeToggleProps {
 export function ModeToggle({ footer }: ModeToggleProps) {
   const { setTheme, theme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const isDisabled = true; // Butonun Disable durumunu kontrol eder.
+  const isDisabled = false; // Butonun Disable durumunu kontrol eder.
 
   useEffect(() => {
     setMounted(true);
@@ -49,8 +49,8 @@ export function ModeToggle({ footer }: ModeToggleProps) {
             className="bg-transparent dark:bg-transparent focus:bg-transparent"
             onClick={() => setTheme(theme === "light" ? "dark" : "light")}
           >
-            <Sun className={sunClass} />
-            <Moon className={moonClass} />
+            <Sun className={sunClass + " text-black"} />
+            <Moon className={moonClass + " text-white"} />
           </Button>
           {isDisabled && (
             <span

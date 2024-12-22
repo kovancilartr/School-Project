@@ -9,6 +9,7 @@ const Menu = async () => {
   const menuItems = [
     {
       title: "Menü",
+      key: "menu",
       items: [
         {
           icon: "/teacher.png",
@@ -35,12 +36,6 @@ const Menu = async () => {
           visible: ["admin", "teacher"],
         },
         {
-          icon: "/subject.png",
-          label: "Subjects",
-          href: "/list/subjects",
-          visible: ["admin"],
-        },
-        {
           icon: "/class.png",
           label: "Sınıflar",
           href: "/list/classes",
@@ -65,15 +60,9 @@ const Menu = async () => {
           visible: ["admin", "teacher", "student", "parent"],
         },
         {
-          icon: "/result.png",
+          icon: "/attendance.png",
           label: "Sonuçlar",
           href: "/list/results",
-          visible: ["admin", "teacher", "student", "parent"],
-        },
-        {
-          icon: "/attendance.png",
-          label: "Katılım",
-          href: "/list/attendance",
           visible: ["admin", "teacher", "student", "parent"],
         },
         {
@@ -83,21 +72,22 @@ const Menu = async () => {
           visible: ["admin", "teacher", "student", "parent"],
         },
         {
-          icon: "/message.png",
-          label: "Mesajlar",
-          href: "/list/messages",
-          visible: ["admin", "teacher", "student", "parent"],
+          icon: "/attendance.png",
+          label: "Subjects",
+          href: "/list/subjects",
+          visible: ["admin"],
         },
         {
-          icon: "/announcement.png",
-          label: "Duyurular",
-          href: "/list/announcements",
+          icon: "/attendance.png",
+          label: "Katılım",
+          href: "/list/attendance",
           visible: ["admin", "teacher", "student", "parent"],
         },
       ],
     },
     {
       title: " ",
+      key: "other",
       items: [
         {
           icon: "/home.png",
@@ -112,6 +102,18 @@ const Menu = async () => {
           visible: ["admin", "teacher", "student", "parent"],
         },
         {
+          icon: "/message.png",
+          label: "Mesajlar",
+          href: "/list/messages",
+          visible: ["admin", "teacher", "student", "parent"],
+        },
+        {
+          icon: "/announcement.png",
+          label: "Duyurular",
+          href: "/list/announcements",
+          visible: ["admin", "teacher", "student", "parent"],
+        },
+        {
           icon: "/setting.png",
           label: "Settings",
           href: "/settings",
@@ -120,36 +122,81 @@ const Menu = async () => {
       ],
     },
   ];
-  
+
   return (
-    <div className="mt-4 text-sm">
-      {menuItems.map((i) => (
-        <div className="flex flex-col gap-2" key={i.title}>
-          <span className="hidden lg:block text-center text-gray-400 font-light my-2 border-b border-gray-100">
-            {i.title}
-          </span>
-          {i.items.map((item) => {
-            if (item.visible.includes(role)) {
-              return (
-                <Link
-                  href={item.href}
-                  key={item.label}
-                  className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-lamaSkyLight"
-                >
-                  <Image src={item.icon} alt="" width={20} height={20} />
-                  <span className="hidden lg:block">{item.label}</span>
-                </Link>
-              );
-            }
-          })}
-        </div>
-      ))}
-      <SignOutButton>
-        <div className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-lamaSkyLight cursor-pointer my-2">
-          <Image src="/logout.png" alt="" width={20} height={20} />
-          <span className="hidden lg:block">Çıkış Yap</span>
-        </div>
-      </SignOutButton>
+    <div className="mt-4 text-sm ">
+      <div className="flex flex-col justify-between">
+        {menuItems
+          .filter((i) => i.key === "menu")
+          .map((i) => (
+            <div className="flex flex-col gap-2" key={i.title}>
+              <span className="hidden lg:block text-center font-light my-2 border-b border-gray-100 baseText">
+                {i.title}
+              </span>
+              {i.items.map((item) => {
+                if (item.visible.includes(role)) {
+                  return (
+                    <Link
+                      href={item.href}
+                      key={item.label}
+                      className="flex items-center justify-center lg:justify-start gap-4 baseText py-2 md:px-2 rounded-md hover:bg-lamaSkyLight hover:text-black"
+                    >
+                      <Image
+                        src={item.icon}
+                        alt=""
+                        width={20}
+                        height={20}
+                        className="invert"
+                      />
+                      <span className="hidden lg:block">{item.label}</span>
+                    </Link>
+                  );
+                }
+              })}
+            </div>
+          ))}
+        {menuItems
+          .filter((i) => i.key === "other")
+          .map((i) => (
+            <div className="flex flex-col gap-2" key={i.title}>
+              <span className="hidden lg:block text-center baseText font-light my-2">
+                {i.title}
+              </span>
+              {i.items.map((item) => {
+                if (item.visible.includes(role)) {
+                  return (
+                    <Link
+                      href={item.href}
+                      key={item.label}
+                      className="flex items-center justify-center lg:justify-start gap-4 baseText py-2 md:px-2 rounded-md hover:bg-lamaSkyLight hover:text-black"
+                    >
+                      <Image
+                        src={item.icon}
+                        alt=""
+                        width={20}
+                        height={20}
+                        className="invert"
+                      />
+                      <span className="hidden lg:block">{item.label}</span>
+                    </Link>
+                  );
+                }
+              })}
+            </div>
+          ))}
+        <SignOutButton>
+          <div className="flex  justify-center lg:justify-start gap-4 baseText py-2 md:px-2 rounded-md hover:bg-lamaSkyLight hover:text-black cursor-pointer my-2">
+            <Image
+              src="/logout.png"
+              alt=""
+              width={20}
+              height={20}
+              className="invert"
+            />
+            <span className="hidden lg:block">Çıkış Yap</span>
+          </div>
+        </SignOutButton>
+      </div>
     </div>
   );
 };

@@ -12,7 +12,6 @@ export default function SignInPage() {
 
   useEffect(() => {
     const role = user?.publicMetadata?.role;
-    console.log(user);
 
     if (role) {
       router.push(`/${role}`);
@@ -91,13 +90,13 @@ export default function SignInPage() {
             Giriş Yap
           </SignIn.Action>
           <p className="text-center text-sm text-zinc-500">
-            Mevcut bir hesabınız yok mu?
-            {/* <Clerk.Link
+            Ana sayfaya gitmek dönmek için {" "}
+            <Clerk.Link
               navigate="sign-up"
               className="font-medium text-zinc-950 decoration-zinc-950/20 underline-offset-4 outline-none hover:text-zinc-700 hover:underline focus-visible:underline"
             >
-              Create an account
-            </Clerk.Link> */}
+              TIKLA
+            </Clerk.Link>
           </p>
         </SignIn.Step>
       </SignIn.Root>

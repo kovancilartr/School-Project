@@ -25,7 +25,7 @@ const Announcements = async () => {
   });
 
   return (
-    <div className="bg-white p-4 rounded-md">
+    <div className="baseContent p-4 rounded-md">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">Announcements (Duyurular)</h1>
         <span className="text-xs text-gray-400">View All</span>

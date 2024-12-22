@@ -2,7 +2,12 @@ import { SignOutButton, UserButton } from "@clerk/nextjs";
 import { currentUser } from "@clerk/nextjs/server";
 import Image from "next/image";
 import { ModeToggle } from "../ModeToggle";
-import { Megaphone, MessageCircle, MessageCircleMore } from "lucide-react";
+import {
+  Megaphone,
+  MessageCircle,
+  MessageCircleMore,
+  Table,
+} from "lucide-react";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
@@ -21,15 +26,6 @@ const Navbar = async () => {
   console.log("NAVBAR :", user);
   return (
     <div className="flex items-center justify-between p-4">
-      {/* SEARCH BAR */}
-      <div className="hidden md:flex items-center gap-2 text-xs rounded-full ring-[1.5px] ring-gray-300 px-2">
-        <Image src="/search.png" alt="" width={14} height={14} />
-        <input
-          type="text"
-          placeholder="Search..."
-          className="w-[200px] p-2 bg-transparent outline-none"
-        />
-      </div>
       {/* ICONS AND USER */}
       <div className="flex items-center gap-6 justify-end w-full">
         <ModeToggle />
@@ -87,7 +83,7 @@ const Navbar = async () => {
                   <span className="text-xs leading-3 font-medium">
                     {user?.firstName} {user?.lastName}
                   </span>
-                  <span className="text-[10px] text-gray-500 text-right">
+                  <span className="text-[10px] text-black dark:text-white text-right">
                     {(user?.publicMetadata?.role as string) === "admin"
                       ? "Admin"
                       : (user?.publicMetadata?.role as string) === "teacher"

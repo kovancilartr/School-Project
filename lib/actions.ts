@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import {
   ClassSchema,
   ExamSchema,
+  ParentSchema,
   StudentSchema,
   SubjectSchema,
   TeacherSchema,
@@ -325,7 +326,6 @@ export const updateStudent = async (
         id: data.id,
       },
       data: {
-        ...(data.password !== "" && { password: data.password }),
         username: data.username,
         name: data.name,
         surname: data.surname,
@@ -343,8 +343,8 @@ export const updateStudent = async (
     });
     revalidatePath("/list/students");
     return { success: true, error: false };
-  } catch (err) {
-    console.log(err);
+  } catch (err: any) {
+    console.error("createParent:", err.toString());
     return { success: false, error: true };
   }
 };
@@ -365,8 +365,8 @@ export const deleteStudent = async (
 
     revalidatePath("/list/students");
     return { success: true, error: false };
-  } catch (err) {
-    console.log(err);
+  } catch (err: any) {
+    console.error("createParent:", err.toString());
     return { success: false, error: true };
   }
 };
@@ -403,8 +403,8 @@ export const createExam = async (
 
     revalidatePath("/list/subjects");
     return { success: true, error: false };
-  } catch (err) {
-    console.log(err);
+  } catch (err: any) {
+    console.error("createParent:", err.toString());
     return { success: false, error: true };
   }
 };
@@ -444,8 +444,8 @@ export const updateExam = async (
 
     revalidatePath("/list/subjects");
     return { success: true, error: false };
-  } catch (err) {
-    console.log(err);
+  } catch (err: any) {
+    console.error("createParent:", err.toString());
     return { success: false, error: true };
   }
 };
@@ -469,8 +469,111 @@ export const deleteExam = async (
 
     revalidatePath("/list/subjects");
     return { success: true, error: false };
-  } catch (err) {
-    console.log(err);
+  } catch (err: any) {
+    console.error("createParent:", err.toString());
+    return { success: false, error: true };
+  }
+};
+
+export const createParent = async (
+  currentState: CurrentState,
+  data: ParentSchema
+) => {
+  try {
+    const user = await client.users.createUser({
+      username: data.username,
+      password: data.password,
+      firstName: data.name,
+      lastName: data.surname,
+      publicMetadata: { role: "parent" },
+    });
+
+    await prisma.parent.create({
+      data: {
+        id: user.id,
+        username: data.username,
+        name: data.name,
+        surname: data.surname,
+        email: data.email || null,
+        phone: data.phone,
+        address: data.address,
+        students: {
+          connect: data.students?.map((studentId: string) => ({
+            id: studentId,
+          })),
+        },
+      },
+    });
+
+    revalidatePath("/list/parents");
+    return { success: true, error: false };
+  } catch (err: any) {
+    console.error("createParent:", err.toString());
+    return { success: false, error: true };
+  }
+};
+
+export const updateParent = async (
+  currentState: CurrentState,
+  data: ParentSchema
+) => {
+  if (!data.id) {
+    return { success: false, error: true };
+  }
+  try {
+    await prisma.parent.update({
+      where: { id: data.id },
+      data: {
+        username: data.username,
+        name: data.name,
+        surname: data.surname,
+        email: data.email || null,
+        phone: data.phone,
+        address: data.address,
+        students: {
+          set: data.students?.map((studentId: string) => ({ id: studentId })),
+        },
+      },
+    });
+    revalidatePath("/list/parents");
+    return { success: true, error: false };
+  } catch (err: any) {
+    console.error("updateParent:", err.toString());
+    return { success: false, error: true };
+  }
+};
+
+export const deleteParent = async (
+  currentState: CurrentState,
+  data: FormData
+) => {
+  const id = data.get("id") as string;
+  try {
+    // Öncelikle, ebeveynle ilişkili öğrencileri silin
+    await prisma.student.deleteMany({
+      where: {
+        parentId: id,
+      },
+    });
+
+    await prisma.parent.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    try {
+      await client.users.deleteUser(id);
+    } catch (error: any) {
+      if (error.status === 404) {
+        console.error("Kullanıcı silme hatası:", error.toString());
+      }
+    }
+
+    revalidatePath("/list/students");
+    return { success: true, error: false };
+  } catch (err: any) {
+    console.error("deleteParent:", err.toString());
     return { success: false, error: true };
   }
 };

@@ -12,7 +12,7 @@ const CountChartContainer = async () => {
   const girls = data.find((d) => d.sex === "FEMALE")?._count || 0;
 
   return (
-    <div className="bg-white rounded-xl w-full h-full p-4">
+    <div className="baseContent rounded-xl w-full h-full p-4">
       {/* TITLE */}
       <div className="flex justify-between items-center">
         <h1 className="text-lg font-semibold">Öğrenci Bilgileri</h1>

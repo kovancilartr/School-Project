@@ -21,7 +21,7 @@ const EventCalendar = () => {
   }, [value, router]);
 
   return (
-    <div className="bg-white p-4 rounded-md">
+    <div className="dark:text-black p-4 rounded-md ">
       <Calendar onChange={onChange} value={value} />
     </div>
   );

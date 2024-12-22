@@ -7,7 +7,7 @@ const matchers = Object.keys(routeAccessMap).map((route) => ({
   allowedRoles: routeAccessMap[route],
 }));
 
-console.log(matchers);
+// console.log(matchers);
 
 export default clerkMiddleware(async (auth, req) => {
   const { sessionClaims } = await auth();
@@ -15,11 +15,21 @@ export default clerkMiddleware(async (auth, req) => {
 
   for (const { matcher, allowedRoles } of matchers) {
     if (matcher(req)) {
-      if (!role && req.url.includes("/auth/profile")) {
-        return NextResponse.redirect(new URL("/auth/login", req.url));
+      if (req.url === "/") {
+        return NextResponse.next(); // Ana sayfaya herkes erişebilir
+      }
+      if (req.url.includes("/auth")) {
+        if (!role) {
+          // Rolü olmayan kullanıcılar için yönlendirme
+          return NextResponse.redirect(new URL("/auth/login", req.url));
+        }
+        if (req.url === "/auth/profile" && !allowedRoles.includes(role!)) {
+          // Giriş yapmış kullanıcılar için /auth/profile kontrolü
+          return NextResponse.redirect(new URL("/403", req.url)); // 403 sayfasına yönlendirme
+        }
       }
       if (!allowedRoles.includes(role!)) {
-        return NextResponse.redirect(new URL(`/${role}`, req.url));
+        return NextResponse.redirect(new URL("/403", req.url)); // Yetkisiz erişim için 403 yönlendirmesi
       }
     }
   }

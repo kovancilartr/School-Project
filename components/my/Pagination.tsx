@@ -18,12 +18,12 @@ const Pagination = ({ page, count }: { page: number; count: number }) => {
     <div className="p-4 flex items-center justify-between text-gray-500">
       <button
         disabled={!hasPrev}
-        className="py-2 px-4 rounded-md bg-slate-200 text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+        className="py-2 px-4 rounded-md bg-slate-200 text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed lg:w-48 sm:w-36"
         onClick={() => {
           changePage(page - 1);
         }}
       >
-        Prev
+        Geri
       </button>
       <div className="flex items-center gap-2 text-sm">
         {Array.from(
@@ -47,13 +47,13 @@ const Pagination = ({ page, count }: { page: number; count: number }) => {
         )}
       </div>
       <button
-        className="py-2 px-4 rounded-md bg-slate-200 text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+        className="py-2 px-4 rounded-md bg-slate-200 text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed lg:w-48 sm:w-36"
         disabled={!hasNext}
         onClick={() => {
           changePage(page + 1);
         }}
       >
-        Next
+        İleri
       </button>
     </div>
   );

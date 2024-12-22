@@ -45,7 +45,6 @@ const TeacherForm = ({
     console.log(data);
     formAction({ ...data, img: img?.secure_url });
   });
-  
 
   const router = useRouter();
 
@@ -61,11 +60,13 @@ const TeacherForm = ({
 
   return (
     <form className="flex flex-col gap-8" onSubmit={onSubmit}>
-      <h1 className="text-xl font-semibold">
-        {type === "create" ? "Create a new teacher" : "Update the teacher"}
+      <h1 className="text-xl font-semibold text-center">
+        {type === "create"
+          ? "Yeni Öğretmen Kaydı"
+          : "Öğretmen Bilgilerini Güncelle"}
       </h1>
-      <span className="text-xs text-gray-400 font-medium">
-        Authentication Information
+      <span className="text-xs mx-auto text-center text-gray-400 font-medium border-b w-1/2 pb-2">
+        Giriş Bilgileri
       </span>
       <div className="flex justify-between flex-wrap gap-4">
         <InputField
@@ -91,8 +92,8 @@ const TeacherForm = ({
           error={errors?.password}
         />
       </div>
-      <span className="text-xs text-gray-400 font-medium">
-        Personal Information
+      <span className="text-xs mx-auto text-center text-gray-400 font-medium border-b w-1/2 pb-2">
+        Kişisel Bilgiler
       </span>
       <div className="flex justify-between flex-wrap gap-4">
         <InputField
@@ -208,7 +209,7 @@ const TeacherForm = ({
         <span className="text-red-500">Something went wrong!</span>
       )}
       <button className="bg-blue-400 text-white p-2 rounded-md">
-        {type === "create" ? "Create" : "Update"}
+        {type === "create" ? "Oluştur" : "Güncelle"}
       </button>
     </form>
   );

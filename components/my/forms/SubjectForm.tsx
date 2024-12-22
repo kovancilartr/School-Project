@@ -9,6 +9,13 @@ import { useFormState } from "react-dom";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { ChevronDown } from "lucide-react";
 
 const SubjectForm = ({
   type,
@@ -53,7 +60,7 @@ const SubjectForm = ({
         title: "İşlem başarılı...",
         description: "Yeni konu oluşturuldu!",
         duration: 5000,
-      })
+      });
       setOpen(false);
       router.refresh();
     }
@@ -67,14 +74,14 @@ const SubjectForm = ({
         {type === "create" ? "Yeni bir konu oluştur" : "Konu düzenle"}
       </h1>
 
-      <div className="flex flex-row justify-between  gap-4">
-          <InputField
-            label="Konu Adı"
-            name="name"
-            defaultValue={data?.name}
-            register={register}
-            error={errors?.name}
-          />
+      <div className="flex flex-row justify-between ">
+        <InputField
+          label="Konu Adı"
+          name="name"
+          defaultValue={data?.name}
+          register={register}
+          error={errors?.name}
+        />
 
         {data && (
           <InputField
@@ -88,25 +95,38 @@ const SubjectForm = ({
         )}
         <div className="flex flex-col gap-2 w-full md:w-1/3">
           <label className="text-xs text-gray-500">Öğretmenler</label>
-          <select
-            multiple
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("teachers")}
-            defaultValue={data?.teachers}
-          >
-            {teachers.map(
-              (teacher: { id: string; name: string; surname: string }) => (
-                <option value={teacher.id} key={teacher.id}>
-                  {teacher.name + " " + teacher.surname}
-                </option>
-              )
-            )}
-          </select>
-          {errors.teachers?.message && (
-            <p className="text-xs text-red-400">
-              {errors.teachers.message.toString()}
-            </p>
-          )}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild className="w-full">
+              <Button
+                variant="outline"
+                className="w-full flex items-center justify-between"
+              >
+                {"Öğretmen Seç"}
+                <ChevronDown className="h-4 w-4 opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56 max-h-80 overflow-y-auto">
+              <select
+                multiple
+                className="p-2 rounded-md text-sm w-full"
+                {...register("teachers")}
+                defaultValue={data?.teachers}
+              >
+                {teachers.map(
+                  (teacher: { id: string; name: string; surname: string }) => (
+                    <option value={teacher.id} key={teacher.id}>
+                      {teacher.name + " " + teacher.surname}
+                    </option>
+                  )
+                )}
+              </select>
+              {errors.teachers?.message && (
+                <p className="text-xs text-red-400">
+                  {errors.teachers.message.toString()}
+                </p>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
       {state.error && (

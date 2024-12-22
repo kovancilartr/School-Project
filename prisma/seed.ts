@@ -3,18 +3,14 @@ const prisma = new PrismaClient();
 
 async function main() {
   // ADMIN
-  await prisma.admin.create({
-    data: {
-      id: "admin1",
-      username: "admin1",
-    },
-  });
-  await prisma.admin.create({
-    data: {
-      id: "admin2",
-      username: "admin2",
-    },
-  });
+  for (let i = 1; i <= 3; i++) {
+    await prisma.admin.create({
+      data: {
+        id: `admin${i}`, // Unique ID for the admin
+        username: `admin${i}`,
+      },
+    });
+  }
 
   // GRADE
   for (let i = 1; i <= 6; i++) {

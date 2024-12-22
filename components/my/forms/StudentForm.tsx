@@ -85,12 +85,12 @@ const StudentForm = ({
   const { grades, classes } = relatedData;
 
   return (
-    <form className="flex flex-col gap-8" onSubmit={onSubmit}>
-      <h1 className="text-xl font-semibold">
-        {type === "create" ? "Create a new student" : "Update the student"}
+    <form className="flex flex-col gap-4" onSubmit={onSubmit}>
+      <h1 className="text-xl font-semibold text-center">
+        {type === "create" ? "Yeni Öğrenci Kaydı" : "Öğrenci Bilgilerini Güncelle"}
       </h1>
-      <span className="text-xs text-gray-400 font-medium">
-        Authentication Information
+      <span className="text-xs mx-auto text-center text-gray-400 font-medium border-b w-1/2 pb-2">
+        Giriş Bilgileri
       </span>
       <div className="flex justify-between flex-wrap gap-4">
         <InputField
@@ -116,8 +116,8 @@ const StudentForm = ({
           error={errors?.password}
         />
       </div>
-      <span className="text-xs text-gray-400 font-medium">
-        Personal Information
+      <span className="text-xs mx-auto text-center text-gray-400 font-medium border-b w-1/2 pb-2">
+        Kişisel Bilgiler
       </span>
       {/* <CldUploadWidget
         uploadPreset="school"
@@ -264,7 +264,7 @@ const StudentForm = ({
         </div>
       </div>
       <button type="submit" className="bg-blue-400 text-white p-2 rounded-md">
-        {type === "create" ? "Create" : "Update"}
+        {type === "create" ? "Oluştur" : "Güncelle"}
       </button>
     </form>
   );
